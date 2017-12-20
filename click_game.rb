@@ -2,6 +2,7 @@ $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__)))
 require "httparty"
 require "yaml"
 require "board_analizer"
+require "groups_evaluator"
 
 module ClickGame
   TOKEN = "OAGXJMOJQQMVDRBP"
@@ -18,6 +19,10 @@ module ClickGame
     p cells
     p tour.map_cells
     p tour.groups
+
+    delete_group = GroupsEvaluator.new(size, cells, tour.map_cells, tour.groups)
+    group = delete_group.best_group
+    p group
   end
 end
 
