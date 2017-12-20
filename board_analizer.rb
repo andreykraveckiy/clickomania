@@ -1,5 +1,3 @@
-require 'pry'
-
 class BoardAnalizer
   DELETED_VALUE = 5
   attr_reader :map_cells, :groups
@@ -7,7 +5,7 @@ class BoardAnalizer
   def initialize(size, cells)
     @size = size
     @cells = cells
-    @map_cells = Array.new(5, Array.new(5,0))
+    @map_cells = Array.new(@size) { Array.new(@size, 0) }
     @groups = []
   end
 
@@ -25,22 +23,20 @@ class BoardAnalizer
 
   def build_group(element, row_index, element_index)
     current_group = [[row_index, element_index]]
-    return_to = {}
 
     cur_i = row_index
     cur_j = element_index
     element_number = 0
 
     while true do
-      binding.pry
       neib = good_neiborghouds(element, cur_i, cur_j)
-      cur_i, cur_j = return_to.delete([cur_i, cur_j]) if neib.empty?
-      current_group.concat(neib)
-      current_group.each { |i, j| @map_cells[i][j] = 1 } if current_group.count > 1
+      unless neib.empty?
+        current_group.concat(neib)
+        current_group.each { |i,j| @map_cells[i][j] = 1 }
+      end
 
       element_number += 1
-      break if element_number >= current_group.size
-      return_to[current_group[element_number]] = [cur_i, cur_j]
+      break if element_number == current_group.size
       cur_i, cur_j = current_group[element_number]
     end
 
